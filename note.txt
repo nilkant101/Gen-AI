@@ -1,0 +1,6 @@
+// dotenv.config() loads all variables from the .env file into the process.env object.
+const dotenv = require("dotenv");
+dotenv.config();
+console.log(process.env.PORT);
+
+500 eithout that you wil get undefind
