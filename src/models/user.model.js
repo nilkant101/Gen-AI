@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
         required :true,
       },
 
-      emial:{
+      email:{
         type:String,
         unique:[true,"Account already exists with this emial address"],
         required:true

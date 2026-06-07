@@ -1,6 +1,7 @@
 const userModel = require("../models/user.model")
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const tokenBlacklistmodel = require("../models/blacklist.model")
 
 
 /**
@@ -9,11 +10,11 @@ const jwt = require("jsonwebtoken");
  * @access public
  */
 async function registerUserController( req, res ){
-    const { username, eamil, passworld } = req.body;
+    const { username, email, password } = req.body;
 
-   if(!usernmae || !email || !password){
+   if(!username || !email || !password){
             return res.status(400).json({
-            message:"Please provide username, emial And password"
+            message:"Please provide username, email And password"
         })
    }
 
@@ -35,8 +36,8 @@ async function registerUserController( req, res ){
 
     const token = jwt.sign(
     {id:user._id, username: user.username},
-    process,env,JWT_SECRET,
-    {expresIn: "1d"}
+    process.env.JWT_SECRET,
+    {expiresIn: "1d"}
     )
     
     res.cookie("token", token)
@@ -60,13 +61,13 @@ async function registerUserController( req, res ){
 
 async function loginUserController(req, res){
     const { email, password } = req.body
-    const user = await userModule.findOne({ email })
+    const user = await userModel.findOne({ email })
     if(!user){
         return res.status(400).json({
             message: "invalid email or password"
         })
     }
-    const idPasswordValid = await bcrypt.compare(password,user.password)
+    const isPasswordValid = await bcrypt.compare(password,user.password);
 
     if(!isPasswordValid){
         return res.status(400).json({
@@ -91,8 +92,22 @@ async function loginUserController(req, res){
     })
 } 
 
+async function logoutUserController(req, res){
+    const token = req.cookies.token
+
+    if(token){
+        await tokenBlacklistModel.create({token})
+    }
+   res.clearCookie("token")
+   res.status(200).json({
+        message: "user logged out succesfully"
+   })
+}
+
+
 
 module.exports = {
     registerUserController
     ,loginUserController
+    ,logoutUserController
 }

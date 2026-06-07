@@ -1,7 +1,12 @@
 require("dotenv").config();
 const express = require('express');
 const app = express();
+const cookieParser = require("cookie-parser")
+
 app.use(express.json()); //data parse req.body madhe
+app.use(cookieParser()); //data parse req.body madhe
+
+
 
 
 // require all the routes here
