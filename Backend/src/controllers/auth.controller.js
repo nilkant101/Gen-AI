@@ -68,7 +68,6 @@ async function loginUserController(req, res){
         })
     }
     const isPasswordValid = await bcrypt.compare(password,user.password);
-
     if(!isPasswordValid){
         return res.status(400).json({
             message:"Invalid email or password"
@@ -94,12 +93,11 @@ async function loginUserController(req, res){
 
 async function logoutUserController(req, res){
     const token = req.cookies.token
-
     if(token){
         await tokenBlacklistModel.create({token})
     }
-   res.clearCookie("token")
-   res.status(200).json({
+    res.clearCookie("token")
+    res.status(200).json({
         message: "user logged out succesfully"
    })
 }
@@ -113,7 +111,7 @@ async function logoutUserController(req, res){
 
 async function getMeController(req, res){
       const user = await userModel.findById(req.user.id)
-
+      console.log(req.user.id);
       res.status(200).json({
         messsage: " user details fetched sucessfully",
         user:{
